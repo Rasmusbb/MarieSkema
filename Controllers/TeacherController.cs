@@ -46,12 +46,27 @@ namespace Marie.Controllers
             return TeacherDTO;
         }
 
+        [HttpPut("EditedTeacher")]
+        public async Task<ActionResult<TeacherDTO>> EditedTeacher(Guid TeacherID,TeacherDTO teacherDTO)
+        {
+            Teacher teacher = await _context.Teachers.FindAsync(TeacherID);
+            teacher = teacherDTO.Adapt<Teacher>();
+            await _context.SaveChangesAsync();
+            return Ok("Teacher infomation updated");
+        }
 
         [HttpGet("GetAllTeachers")]
         public async Task<ActionResult<List<TeacherDTOID>>> GetAllTeachers(string Educating)
         {
             List<TeacherDTOID> Teachers = _context.Teachers.Where(x => x.Educating == Educating).ToList().Adapt<List<TeacherDTOID>>();
             return Teachers;
+        }
+
+        [HttpDelete("DeleteTeacher")]
+        public async Task<ActionResult<List<TeacherDTOID>>> DeleteTeacher(Guid TeacherID)
+        {
+            _context.Remove(await _context.Teachers.FindAsync(TeacherID));
+            return Ok("Teacher was Deleted");
         }
 
 

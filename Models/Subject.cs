@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marie.Models
 {
@@ -6,9 +7,13 @@ namespace Marie.Models
     {
         [Key]
         public Guid SubjectID { get; set; }
-        public Guid Name { get; set; }
-        public DateTime Days { get; set; }
-        public Guid DaysCount { get; set; }
-        public Guid Hourse { get; set; }
+        public string Name { get; set; }
+        public string Education { get; set; }
+        [ForeignKey("TeacherID")]
+        public Guid TeacherID { get; set; }
+        public int TotalHours { get; set; }
+        public int TotalTPHours { get; set; }
+        public int UsedTPHours { get; set; }
+        public ICollection<DaySchedule> Days { get; set; }
     }
 }

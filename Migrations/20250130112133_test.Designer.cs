@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marie.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250113121712_new")]
-    partial class @new
+    [Migration("20250130112133_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,12 @@ namespace Marie.Migrations
 
             modelBuilder.Entity("Marie.Models.DaySchedule", b =>
                 {
-                    b.Property<Guid>("DayID")
+                    b.Property<Guid>("DayScheduleID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Education")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -37,13 +40,16 @@ namespace Marie.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SubjectID")
+                    b.Property<Guid>("SubjectID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TeacherID")
+                    b.Property<int>("TPHours")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TeacherID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("DayID");
+                    b.HasKey("DayScheduleID");
 
                     b.HasIndex("SubjectID");
 
@@ -58,17 +64,23 @@ namespace Marie.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Days")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Education")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("DaysCount")
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TeacherID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Hourse")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("TotalHours")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("Name")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("TotalTPHours")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedTPHours")
+                        .HasColumnType("int");
 
                     b.HasKey("SubjectID");
 
@@ -97,17 +109,22 @@ namespace Marie.Migrations
 
             modelBuilder.Entity("Marie.Models.DaySchedule", b =>
                 {
-                    b.HasOne("Marie.Models.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectID");
-
-                    b.HasOne("Marie.Models.Teacher", "Teacher")
+                    b.HasOne("Marie.Models.Subject", null)
                         .WithMany("Days")
-                        .HasForeignKey("TeacherID");
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Subject");
+                    b.HasOne("Marie.Models.Teacher", null)
+                        .WithMany("Days")
+                        .HasForeignKey("TeacherID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Navigation("Teacher");
+            modelBuilder.Entity("Marie.Models.Subject", b =>
+                {
+                    b.Navigation("Days");
                 });
 
             modelBuilder.Entity("Marie.Models.Teacher", b =>

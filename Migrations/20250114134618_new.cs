@@ -16,10 +16,12 @@ namespace Marie.Migrations
                 columns: table => new
                 {
                     SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Days = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DaysCount = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Hourse = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Education = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TeacherID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TotalHours = table.Column<int>(type: "int", nullable: false),
+                    TotalTPHours = table.Column<int>(type: "int", nullable: false),
+                    UsedTPHours = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,25 +46,29 @@ namespace Marie.Migrations
                 name: "DaySchedules",
                 columns: table => new
                 {
-                    DayID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DayScheduleID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TeacherID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Education = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TeacherID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TPHours = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DaySchedules", x => x.DayID);
+                    table.PrimaryKey("PK_DaySchedules", x => x.DayScheduleID);
                     table.ForeignKey(
                         name: "FK_DaySchedules_Subjects_SubjectID",
                         column: x => x.SubjectID,
                         principalTable: "Subjects",
-                        principalColumn: "SubjectID");
+                        principalColumn: "SubjectID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DaySchedules_Teachers_TeacherID",
                         column: x => x.TeacherID,
                         principalTable: "Teachers",
-                        principalColumn: "TeacherID");
+                        principalColumn: "TeacherID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
